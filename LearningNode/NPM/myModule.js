@@ -5,7 +5,7 @@ exports.myText2 = "test"
 exports.myCounter = () => {
     count = 0
 
-    for(var i=0; i<10; i++){
+    for(var i=0; i<11; i++){
         count = count + i
     }
 

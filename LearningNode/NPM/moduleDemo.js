@@ -2,6 +2,6 @@
 //here, the methods are being imported as the object exported from myModule
 const {myText, myText2, myCounter} = require('./myModule.js')
 
-console.log(myModule.myText)
-console.log(myModule.myText2)
-console.log(myModule.myCounter())
+console.log(myText)
+console.log(myText2)
+console.log(myCounter())
