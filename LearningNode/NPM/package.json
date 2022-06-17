@@ -2,5 +2,25 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "nodemon": "^2.0.16"
-  }
+  },
+  "name": "npm",
+  "version": "1.0.0",
+  "main": "demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albertnguyentran/RealTimeChatApp.git"
+  },
+  "keywords": [
+    "Node"
+  ],
+  "author": "Albert Nguyen-Tran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/albertnguyentran/RealTimeChatApp/issues"
+  },
+  "homepage": "https://github.com/albertnguyentran/RealTimeChatApp#readme",
+  "description": ""
 }
