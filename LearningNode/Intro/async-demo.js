@@ -1,4 +1,4 @@
-//fs is a method that reads files, it can appendFile, open, writeFile
+//fs is a method that reads files, it can appendFile, open, writeFile etc.
 fs = require('fs');
 
 function phoneNumber(err, data){
