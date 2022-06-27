@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- CSS only -->
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    </head>
+        <!-- JavaScript Bundle with Popper -->
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <div class="container">
+        <br>
+        <div class="jumbotron">
+            <h1 class="display-4">Send Message</h1>
+            <br>
+            <input class="form-control" placeholder="Name">
+            <br>
+            <button id="send" class="btn btn-success">Send</button>
+        </div>
+        <div id="messages">
+        </div>
+    </div>
+</body>
+
+<script>
+    $(() => {
+        $("#send").click(() => {
+            addMessages({name: 'Tim', message: 'hello'})
+        })
+    })
+
+    function addMessages(message){
+        $("#messages").append(`<br> <h4> ${message.name} </h4 <p> ${message.message} </p>`)
+    }
+</script>
