@@ -1,20 +1,25 @@
 <!doctype html>
-<!-- CSS only -->
+<!-- Include this in the head to load bootstrap -->
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     </head>
-        <!-- JavaScript Bundle with Popper -->
 
 <body>
+    <!-- Loading the required JS and jquery scripts -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <div class="container">
         <br>
+        <!-- These classes are imported from the bootstrap library -->
         <div class="jumbotron">
             <h1 class="display-4">Send Message</h1>
             <br>
-            <input class="form-control" placeholder="Name">
+            <input name="name" id="name" class="form-control" placeholder="Name"></input>
             <br>
+            <input name="message" id="message" class="form-control" placeholder="Message"></input>
+            <br>
+            <!-- Notice how the button has an id, it can now be accessed through its id -->
             <button id="send" class="btn btn-success">Send</button>
         </div>
         <div id="messages">
@@ -22,14 +27,40 @@
     </div>
 </body>
 
+<!-- This is where the JS scripts can be found -->
 <script>
+
+    //See how the syntax changes from HTML/CSS comments to JS
+    //This is the document ready event function
+    //It occurs only when the DOM has been loaded
     $(() => {
         $("#send").click(() => {
-            addMessages({name: 'Tim', message: 'hello'})
+            var message = {name: $("name").val(), message: $("message").val()}
+            postMessage(message)
         })
+        getMessages()
     })
-
+    
+    //This function inserts the messages using jquery
     function addMessages(message){
         $("#messages").append(`<br> <h4> ${message.name} </h4 <p> ${message.message} </p>`)
     }
+
+    function getMessages() {
+        //jquery HTTP get request, data is obtained from the url then the data is passed as a parameter of the function
+        $.get('http://localhost:3000/messages', (data) => {
+
+            //Obtains data from the server, in this case being the array, then iterates through each element of the array and calls the function addMessages
+            //The method forEach removes the hassle of having to iterating through the array manually
+            data.forEach(element => {
+                addMessages(element)
+            });            
+        })
+    }
+
+    function postMessage(message) {
+        //jquery HTTP get request, data is obtained from the url then the data is passed as a parameter of the function
+        $.post('http://localhost:3000/messages', message)
+    }
+
 </script>
