@@ -7,23 +7,22 @@ app.use(express.static(__dirname))
 //app.use sets up the bodyParser as middleware
 //the following .json() tells the bodyParser method to expect JSON to be coming in with the HTTP request
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({extended: false}))
+
 //Array
 var messages = [
     {name: 'Tim', message: 'Hi'},
     {name: 'Jane', message: 'Hello'}
 ]
 
-//Sends the var messages on page /messages
+//Creates an endpoint at route /messages
 app.get('/messages', (req, res) => {
     res.send(messages)
 })
 
 
 app.post('/messages', (req, res) => {
-    //Here the console.log will return in JSON format because of the bodyParser.json() above to terminal
-    //Messages.push appends the req.body into the messages array, which is then obtained and added with the function addMessages 
-    console.log(req.body)
+    //Messages.push appends the req.body (request) into the messages array, which is then sent to the /messages endpoint and obtained and added with the function addMessages 
     messages.push(req.body)
     res.sendStatus(200)
 })
