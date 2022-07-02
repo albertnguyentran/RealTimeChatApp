@@ -1,15 +1,15 @@
 <!doctype html>
 <!-- Include this in the head to load bootstrap -->
+<!-- Loading the required JS and jquery scripts -->
+
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     </head>
 
-<body>
-    <!-- Loading the required JS and jquery scripts -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <div class="container">
+<body>   
+     <div class="container">
         <br>
         <!-- These classes are imported from the bootstrap library -->
         <div class="jumbotron">
@@ -22,8 +22,7 @@
             <!-- Notice how the button has an id, it can now be accessed through its id -->
             <button id="send" class="btn btn-success">Send</button>
         </div>
-        <div id="messages">
-        </div>
+        <div id="messages"</div>
     </div>
 </body>
 
@@ -43,7 +42,7 @@
     
     //This function inserts the messages using jquery
     function addMessages(message){
-        $("#messages").append(`<br> <h4> ${message.name} </h4 <p> ${message.message} </p>`)
+        $("#messages").append(`<br> <h4> ${message.name} </h4> <p> ${message.message} </p>`)
     }
 
     function getMessages() {
@@ -59,7 +58,7 @@
     }
 
     function postMessage(message) {
-        //jquery HTTP get request, data is obtained from the url then the data is passed as a parameter of the function
+        //jquery HTTP post request, the message var is posted to the endpoint
         $.post('http://localhost:3000/messages', message)
     }
 
