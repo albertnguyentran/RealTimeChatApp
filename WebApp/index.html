@@ -15,14 +15,14 @@
         <div class="jumbotron">
             <h1 class="display-4">Send Message</h1>
             <br>
-            <input name="name" id="name" class="form-control" placeholder="Name"></input>
+            <input name="name" id="name" class="form-control" placeholder="Name" type="text">
             <br>
-            <input name="message" id="message" class="form-control" placeholder="Message"></input>
+            <input name="message" id="message" class="form-control" placeholder="Message" type="text">
             <br>
             <!-- Notice how the button has an id, it can now be accessed through its id -->
             <button id="send" class="btn btn-success">Send</button>
         </div>
-        <div id="messages"</div>
+        <div id="messages"></div>
     </div>
 </body>
 
@@ -33,24 +33,26 @@
     //This is the document ready event function
     //It occurs only when the DOM has been loaded
     $(() => {
+        //Jquery methods can be used on specific html tags by locating it with its id
         $("#send").click(() => {
-            var message = {name: $("name").val(), message: $("message").val()}
+            var message = {name: $("#name").val(), message: $("#message").val()}
             postMessage(message)
         })
         getMessages()
     })
     
-    //This function inserts the messages using jquery
+    //This function inserts the messages into the front-end using jquery
     function addMessages(message){
         $("#messages").append(`<br> <h4> ${message.name} </h4> <p> ${message.message} </p>`)
     }
 
     function getMessages() {
-        //jquery HTTP get request, data is obtained from the url then the data is passed as a parameter of the function
+        //Because the app.get() method of the same endpoint passed in this request is defined in the server.js file, this get request will follow the same callback functions
+        //The callback function of the get method is to send the array of messages to the endpoint
+        //Once that is done, the callback of this function is to get that data
         $.get('http://localhost:3000/messages', (data) => {
 
-            //Obtains data from the server, in this case being the array, then iterates through each element of the array and calls the function addMessages
-            //The method forEach removes the hassle of having to iterating through the array manually
+            //Iterates through each element of the array and calls the function addMessages
             data.forEach(element => {
                 addMessages(element)
             });            
@@ -58,7 +60,8 @@
     }
 
     function postMessage(message) {
-        //jquery HTTP post request, the message var is posted to the endpoint
+        //Because the app.post() method of the same endpoint passed in this request is defined in the server.js file, this post request will follow the same callback functions
+        //The callback function is to append the data into a variable stored as messages in the server
         $.post('http://localhost:3000/messages', message)
     }
 
