@@ -48,8 +48,7 @@
 
     function getMessages() {
         //Because the app.get() method of the same endpoint passed in this request is defined in the server.js file, this get request will follow the same callback functions
-        //The callback function of the get method is to send the array of messages to the endpoint
-        //Once that is done, the callback of this function is to get that data
+        //The callback function of the get method is to return the array of messages, which is defined here as (data)
         $.get('http://localhost:3000/messages', (data) => {
 
             //Iterates through each element of the array and calls the function addMessages

@@ -18,7 +18,7 @@ var messages = [
 //Creates an endpoint at route /messages
 //GET simply means retrieve data from a specified resource
 //Here we are routing all get requests to the specified path with the specified callback functions 
-//Response is to send the var messages to the endpoint
+//Response is to return the var messages
 app.get('/messages', (req, res) => {
     res.send(messages)
 })
