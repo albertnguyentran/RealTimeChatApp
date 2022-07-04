@@ -4,6 +4,7 @@ var app = express()
 
 //Makes it possible to access files from the __dirname file
 app.use(express.static(__dirname))
+
 //app.use sets up the bodyParser as middleware
 //the following .json() tells the bodyParser method to expect JSON to be coming in with the HTTP request
 app.use(bodyParser.json())
