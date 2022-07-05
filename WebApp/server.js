@@ -1,6 +1,10 @@
 var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
+//Setting up http server tied to the app
+var http = require('http').Server(app)
+//Pass in io reference to http
+var io = require('socket.io')(http)
 
 //Makes it possible to access files from the __dirname file
 app.use(express.static(__dirname))
@@ -29,11 +33,19 @@ app.get('/messages', (req, res) => {
 //Whenever a post request is made, the data is pushed into the messages array and the response is to send a status update to confirm its success
 app.post('/messages', (req, res) => {
     messages.push(req.body)
+    //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
+    io.emit('message', req.body)
     res.sendStatus(200)
 })
 
+//io can start listening for events with the on method
+//In this case we are telling it to listen for connections
+io.on('connection', (socket) => {
+    console.log('a user connected')
+})
 
-//App is running on port 3000
-var server = app.listen(3000, () => {
+//HTTP is running on port 3000
+//instead of the server running on app.listen..., http allows both express and socket.io to run together
+var server = http.listen(3000, () => {
     console.log('server is listening on port', server.address().port)
 })

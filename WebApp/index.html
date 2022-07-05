@@ -6,6 +6,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
     </head>
 
 <body>   
@@ -29,6 +30,8 @@
 <!-- This is where the JS scripts can be found -->
 <script>
 
+    var socket = io()
+
     //See how the syntax changes from HTML/CSS comments to JS
     //This is the document ready event function
     //It occurs only when the DOM has been loaded
@@ -41,6 +44,9 @@
         getMessages()
     })
     
+    //This is the event listener, it checks for the message event and once it receives the req.body from the server side, it will pass that through the addMessages function as a parameter
+    socket.on('message', addMessages)
+
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
         $("#messages").append(`<br> <h4> ${message.name} </h4> <p> ${message.message} </p>`)
