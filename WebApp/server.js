@@ -5,6 +5,9 @@ var app = express()
 var http = require('http').Server(app)
 //Pass in io reference to http
 var io = require('socket.io')(http)
+//Setting up mongoose (Object Data modelling library that will allow us to create an Object Scheme on how we want to represent the data we put into the mongodb database)
+var mongoose = require('mongoose')
+
 
 //Makes it possible to access files from the __dirname file
 app.use(express.static(__dirname))
@@ -13,6 +16,9 @@ app.use(express.static(__dirname))
 //the following .json() tells the bodyParser method to expect JSON to be coming in with the HTTP request
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
+
+//This is the mongodb database access link
+var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
 
 //Array
 var messages = [
@@ -42,6 +48,11 @@ app.post('/messages', (req, res) => {
 //In this case we are telling it to listen for connections
 io.on('connection', (socket) => {
     console.log('a user connected')
+})
+
+//Here we are connecting mongoose to our mongodb database with the database link
+mongoose.connect(dbUrl, (err) => {
+    console.log('mongo db connection', err)
 })
 
 //HTTP is running on port 3000
