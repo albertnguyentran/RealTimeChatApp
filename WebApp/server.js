@@ -1,3 +1,8 @@
+//How this works
+//Whenever a message is sent, socket.io emits the message contained within the post request, and the event listener attached to the same socket calls the function addMessages to post it on the website
+//Using jquery's document ready event function, it calls the get request function whenever the website is reloaded, which in turn returns all the messages contained in the mongodb database
+//These messages are then uploaded to the website using the function addMessages as well
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
@@ -20,28 +25,45 @@ app.use(bodyParser.urlencoded({extended: false}))
 //This is the mongodb database access link
 var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
 
-//Array
-var messages = [
-    {name: 'Tim', message: 'Hi'},
-    {name: 'Jane', message: 'Hello'}
-]
+//Captail M for Message indicates that this is a model
+//Here we can design what we want our scheme to look like and what kind of data each variable should hold
+//In this case both will be strings
+var Message = mongoose.model('Message', {
+    name: String,
+    message: String
+})
+
 
 //Creates an endpoint at route /messages
 //GET simply means retrieve data from a specified resource
 //Here we are routing all get requests to the specified path with the specified callback functions 
 //Response is to return the var messages
 app.get('/messages', (req, res) => {
-    res.send(messages)
+    //We want to select all of the messages, so you don't want to pass in anything in the object
+    //This way, whenever a new client opens up the browser, they load up all past messages stored in the mongodb database
+    Message.find({}, (err, messages) => {
+        res.send(messages)
+    })
 })
 
 //POST simply means submit data to be processed to a specificed resource
 //Here we are routing all post requests to the specified path with the specified callback functions 
-//Whenever a post request is made, the data is pushed into the messages array and the response is to send a status update to confirm its success
+//Whenever a post request is made, the data is emitted to the socket message
 app.post('/messages', (req, res) => {
-    messages.push(req.body)
-    //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
-    io.emit('message', req.body)
-    res.sendStatus(200)
+
+    //This var is connected to mongoose which is connected to mongodb
+    var message = new Message(req.body)
+
+    message.save((err) => {
+        if(err)
+            sendStatus(500)
+    
+        //If there is no error, you will receive status 200 and not 500
+        //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
+        io.emit('message', req.body)
+        res.sendStatus(200)
+    })
+    
 })
 
 //io can start listening for events with the on method

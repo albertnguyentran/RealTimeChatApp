@@ -45,6 +45,7 @@
     })
     
     //This is the event listener, it checks for the message event and once it receives the req.body from the server side, it will pass that through the addMessages function as a parameter
+    //This makes the getMessages function obsolete
     socket.on('message', addMessages)
 
     //This function inserts the messages into the front-end using jquery
