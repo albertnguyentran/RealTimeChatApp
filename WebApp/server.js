@@ -22,6 +22,9 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
+//Letting mongoose know that the Promise library we want to use is the default ES6 library
+mongoose.Promise = Promise
+
 //This is the mongodb database access link
 var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
 
@@ -54,16 +57,41 @@ app.post('/messages', (req, res) => {
     //This var is connected to mongoose which is connected to mongodb
     var message = new Message(req.body)
 
-    message.save((err) => {
-        if(err)
-            sendStatus(500)
+    //The then will execute if there are no errors
+    //Alternatively if you did message.save((err) => { ... }), the callback is always called
+    message.save()
     
+    .then(() => {
+        console.log('saved')
+        //Then returns a promise instead of handling it with a callback
+        //The returned promise can be passed through another then method as a parameter
+        //And if there is an error, it is caught with the catch method
+        return Message.findOne({message: 'badword'})
+    })
+
+    //The next then that is chained on, uses the previous promise as its parameter
+    .then(censored => {
+        if (censored){
+            console.log('censored words found', censored)
+            //If a censored word is found, the Message.remove(message) is returned
+            //And because there is not a then chained onto after this, the function ends here because it is returned
+            return Message.remove({_id: censored.id})
+        }
+
         //If there is no error, you will receive status 200 and not 500
         //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
         io.emit('message', req.body)
         res.sendStatus(200)
+
     })
-    
+    .catch((err) => {
+        res.sendStatus(500)
+        return console.error(err)
+    })
+
+
+
+
 })
 
 //io can start listening for events with the on method
