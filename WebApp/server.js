@@ -12,7 +12,8 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 //Setting up mongoose (Object Data modelling library that will allow us to create an Object Scheme on how we want to represent the data we put into the mongodb database)
 var mongoose = require('mongoose')
-
+var Filter = require('bad-words')
+var filter = new Filter()
 
 //Makes it possible to access files from the __dirname file
 app.use(express.static(__dirname))
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://user:password@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
@@ -52,6 +53,59 @@ app.get('/messages', (req, res) => {
 //POST simply means submit data to be processed to a specificed resource
 //Here we are routing all post requests to the specified path with the specified callback functions 
 //Whenever a post request is made, the data is emitted to the socket message
+app.post('/messages', async (req, res) => {
+
+    //This var is connected to mongoose which is connected to mongodb
+    var message = new Message(req.body)
+
+    //The await operator is used to wait for a promise
+    //If the promise is rejected, the error is thrown
+    var savedMessage = await message.save()
+    
+    console.log('saved')
+       
+    var censored =  await Message.findOne({message: 'badword'})
+
+    if (censored)
+        //If a censored word is found, the Message.remove(message) is returned
+        //And because there is not a then chained onto after this, the function ends here because it is returned
+        await Message.remove({_id: censored.id})
+    
+    else
+        //If there is no error, you will receive status 200 and not 500
+        //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
+        io.emit('message', req.body)
+
+    res.sendStatus(200)
+
+        /*.catch((err) => {
+        res.sendStatus(500)
+        return console.error(err)
+        })*/
+
+    })
+
+//io can start listening for events with the on method
+//In this case we are telling it to listen for connections
+io.on('connection', (socket) => {
+    console.log('a user connected')
+})
+
+//Here we are connecting mongoose to our mongodb database with the database link
+mongoose.connect(dbUrl, (err) => {
+    console.log('mongo db connection', err)
+})
+
+//HTTP is running on port 3000
+//instead of the server running on app.listen..., http allows both express and socket.io to run together
+var server = http.listen(3000, () => {
+    console.log('server is listening on port', server.address().port)
+})
+
+
+
+
+/*
 app.post('/messages', (req, res) => {
 
     //This var is connected to mongoose which is connected to mongodb
@@ -74,7 +128,7 @@ app.post('/messages', (req, res) => {
         if (censored){
             console.log('censored words found', censored)
             //If a censored word is found, the Message.remove(message) is returned
-            //And because there is not a then chained onto after this, the function ends here because it is returned
+            //And because there is not a then chained onto after this, the function ends here
             return Message.remove({_id: censored.id})
         }
 
@@ -88,25 +142,5 @@ app.post('/messages', (req, res) => {
         res.sendStatus(500)
         return console.error(err)
     })
-
-
-
-
 })
-
-//io can start listening for events with the on method
-//In this case we are telling it to listen for connections
-io.on('connection', (socket) => {
-    console.log('a user connected')
-})
-
-//Here we are connecting mongoose to our mongodb database with the database link
-mongoose.connect(dbUrl, (err) => {
-    console.log('mongo db connection', err)
-})
-
-//HTTP is running on port 3000
-//instead of the server running on app.listen..., http allows both express and socket.io to run together
-var server = http.listen(3000, () => {
-    console.log('server is listening on port', server.address().port)
-})
+*/
