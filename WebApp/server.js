@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.r9oww.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://albertnguyentran:!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
@@ -103,6 +103,11 @@ app.post('/messages', async (req, res) => {
     } finally {  //finally executes regardless of whether the try catch block executes or not
         console.log('message post called')
     }
+})
+
+app.delete('/messages/:id', (req, res) => {
+    console.log('a')
+    Message.find({id: id}).remove().exec()
 })
 
 //io can start listening for events with the on method

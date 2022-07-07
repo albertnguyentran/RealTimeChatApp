@@ -41,6 +41,7 @@
             var message = {name: $("#name").val(), message: $("#message").val()}
             postMessage(message)
         })
+
         getMessages()
     })
     
@@ -50,7 +51,7 @@
 
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
-        $("#messages").append(`<br> <h4> ${message.name} </h4> <p> ${message.message} </p>`)
+        $("#messages").append(`<div"> <br> <h4> ${message.name} </h4> <p> ${message.message} </p> <button onclick="getID('${message.name}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> </br> </div>`)
     }
 
     function getMessages() {
@@ -69,6 +70,26 @@
         //Because the app.post() method of the same endpoint passed in this request is defined in the server.js file, this post request will follow the same callback functions
         //The callback function is to append the data into a variable stored as messages in the server
         $.post('http://localhost:3000/messages', message)
+    }
+
+    function getID(message) {
+        $.get()
+
+    }
+
+    
+    function deleteMessage(id) {
+
+        $.ajax({
+            url: 'http://localhost:3000/messages/'+id,
+            type: 'DELETE',
+            success: function(result) {
+                alert('message has been deleted')
+            },
+            error: function(error){
+                alert('message could not be deleted')
+            }
+        })
     }
 
 </script>
