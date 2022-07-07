@@ -13,6 +13,7 @@ var io = require('socket.io')(http)
 //Setting up mongoose (Object Data modelling library that will allow us to create an Object Scheme on how we want to represent the data we put into the mongodb database)
 var mongoose = require('mongoose')
 var Filter = require('bad-words')
+const { request } = require('http')
 var filter = new Filter()
 
 //Makes it possible to access files from the __dirname file
@@ -50,40 +51,59 @@ app.get('/messages', (req, res) => {
     })
 })
 
+app.get('/messages/:user', (req, res) => {
+    var user = req.params.user
+    Message.find({name: user}, (err, messages) => {
+        res.send(messages)
+    })
+})
+
+/* Demo async/await function that catches an error and logs it if there is one, and logs the result if there isn't
+async myFunction() {
+    try {
+        let result = await request()
+        console.log(result)
+    } catch (error) {
+        console.log(error)
+    }
+} */
+
 //POST simply means submit data to be processed to a specificed resource
 //Here we are routing all post requests to the specified path with the specified callback functions 
 //Whenever a post request is made, the data is emitted to the socket message
 app.post('/messages', async (req, res) => {
 
-    //This var is connected to mongoose which is connected to mongodb
-    var message = new Message(req.body)
+    try {
+        //This var is connected to mongoose which is connected to mongodb
+        var message = new Message(req.body)
 
-    //The await operator is used to wait for a promise
-    //If the promise is rejected, the error is thrown
-    var savedMessage = await message.save()
-    
-    console.log('saved')
-       
-    var censored =  await Message.findOne({message: 'badword'})
+        //The await operator is used to wait for a promise
+        //If the promise is rejected, the error is thrown
+        var savedMessage = await message.save()
+        
+        console.log('saved')
+        
+        var censored =  await Message.findOne({message: 'badword'})
 
-    if (censored)
-        //If a censored word is found, the Message.remove(message) is returned
-        //And because there is not a then chained onto after this, the function ends here because it is returned
-        await Message.remove({_id: censored.id})
-    
-    else
-        //If there is no error, you will receive status 200 and not 500
-        //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
-        io.emit('message', req.body)
+        if (censored)
+            //If a censored word is found, the Message.remove(message) is returned
+            //And because there is not a then chained onto after this, the function ends here because it is returned
+            await Message.remove({_id: censored.id})
+        
+        else
+            //If there is no error, you will receive status 200 and not 500
+            //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
+            io.emit('message', req.body)
 
-    res.sendStatus(200)
+        res.sendStatus(200)
 
-        /*.catch((err) => {
+    } catch (error) {
         res.sendStatus(500)
-        return console.error(err)
-        })*/
-
-    })
+        return console.error(error)
+    } finally {  //finally executes regardless of whether the try catch block executes or not
+        console.log('message post called')
+    }
+})
 
 //io can start listening for events with the on method
 //In this case we are telling it to listen for connections
