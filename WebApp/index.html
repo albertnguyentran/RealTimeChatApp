@@ -49,9 +49,11 @@
     //This makes the getMessages function obsolete
     socket.on('message', addMessages)
 
+    socket.on('delete', removeMessage)
+
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
-        $("#messages").append(`<div"> <br> <h4> ${message.name} </h4> <p> ${message.message} </p> <button onclick="getID('${message.name}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> </br> </div>`)
+        $("#messages").append(`<div id="${message._id}"> <br> <h4> ${message.name} </h4> <p> ${message.message} </p> <button onclick="deleteMessage('${message._id}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> </br> </div>`)
     }
 
     function getMessages() {
@@ -72,16 +74,16 @@
         $.post('http://localhost:3000/messages', message)
     }
 
-    function getID(message) {
+    /*function getID(message) {
         $.get()
 
-    }
+    }*/
 
-    
+
     function deleteMessage(id) {
 
         $.ajax({
-            url: 'http://localhost:3000/messages/'+id,
+            url: 'http://localhost:3000/messages/'+id, 
             type: 'DELETE',
             success: function(result) {
                 alert('message has been deleted')
@@ -90,6 +92,11 @@
                 alert('message could not be deleted')
             }
         })
+    }
+
+    function removeMessage(id){
+        var deleteThis = "#" + id
+        $(deleteThis).remove()
     }
 
 </script>

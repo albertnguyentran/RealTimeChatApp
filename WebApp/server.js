@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://albertnguyentran:!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://user:pw!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
@@ -93,7 +93,7 @@ app.post('/messages', async (req, res) => {
         else
             //If there is no error, you will receive status 200 and not 500
             //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
-            io.emit('message', req.body)
+            io.emit('message', message)
 
         res.sendStatus(200)
 
@@ -106,9 +106,21 @@ app.post('/messages', async (req, res) => {
 })
 
 app.delete('/messages/:id', (req, res) => {
-    console.log('a')
-    Message.find({id: id}).remove().exec()
+    console.log(req.params.id)
+    Message.findByIdAndDelete({_id: req.params.id}, (err, message) => {
+        if (err) {
+            console.log(err)
+        } 
+        else {
+            res.send(message)
+            io.emit('delete', req.params.id)
+        }
+    })
+        
+  
+ 
 })
+
 
 //io can start listening for events with the on method
 //In this case we are telling it to listen for connections
