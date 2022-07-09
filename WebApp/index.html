@@ -14,7 +14,7 @@
         <br>
         <!-- These classes are imported from the bootstrap library -->
         <div class="jumbotron">
-            <h1 class="display-4">Send Message</h1>
+            <h1 class="display-4">Messenger</h1>
             <br>
             <input name="name" id="name" class="form-control" placeholder="Name" type="text">
             <br>
@@ -38,7 +38,7 @@
     $(() => {
         //Jquery methods can be used on specific html tags by locating it with its id
         $("#send").click(() => {
-            var message = {name: $("#name").val(), message: $("#message").val()}
+            var message = {name: $("#name").val(), message: $("#message").val(), votes: 0}
             postMessage(message)
         })
 
@@ -53,7 +53,7 @@
 
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
-        $("#messages").append(`<div id="${message._id}"> <br> <h4> ${message.name} </h4> <p> ${message.message} </p> <button onclick="deleteMessage('${message._id}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> </br> </div>`)
+        $("#messages").append(`<div id="${message._id}"> <br> <div> <h2> ${message.name} </h2> <p style="font-size:20px"> ${message.message} </p> <p> ${message.votes} </p> </div> <div> <button onclick="deleteMessage('${message._id}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> <button onclick = "updateVote('${message._id}', 1)" type="button" class="btn btn-outline-secondary">Up</button> <button onclick = "updateVote('${message._id}', -1)" type="button" class="btn btn-outline-secondary">Down</button> </div> </br> </div>`)
     }
 
     function getMessages() {
@@ -99,4 +99,30 @@
         $(deleteThis).remove()
     }
 
+    function updateVote(id, vote){
+        $.get('http://localhost:3000/messages/'+id, (data) => {
+            let votes = data
+        })
+
+        votes += vote
+
+        $.ajax({
+            url: 'http://localhost:3000/messages/' + id,
+            type: 'PUT',
+            data: {
+                votes: votes
+            },
+            success: function(result){
+                alert('message updated')
+            },
+            error: function(error){
+                alert('message could not be updated')
+            }
+        })
+
+    }
+
+    function downVote(vote){
+
+    }
 </script>

@@ -28,14 +28,16 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://user:pw!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://user:pass!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
 //In this case both will be strings
 var Message = mongoose.model('Message', {
     name: String,
-    message: String
+    message: String,
+    votes: Number
+
 })
 
 
@@ -55,6 +57,14 @@ app.get('/messages/:user', (req, res) => {
     var user = req.params.user
     Message.find({name: user}, (err, messages) => {
         res.send(messages)
+    })
+})
+
+app.get('/messages/:id', (req, res) => {
+    Message.find({_id: req.params.id}, (err, messages) => {
+        res.send(messages.votes)
+        console.log('hi')
+        console.log(messages.votes)
     })
 })
 
@@ -121,6 +131,13 @@ app.delete('/messages/:id', (req, res) => {
  
 })
 
+app.put('/messages/:id', (req, res) => {
+    Message.find({_id: req.params.id})
+    
+    Message.findByIdAndUpdate({_id: req.params.id}, {votes: req.body.votes}).then(function(message){
+        res.send(message)
+    })
+})
 
 //io can start listening for events with the on method
 //In this case we are telling it to listen for connections
