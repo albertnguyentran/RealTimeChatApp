@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://albertnguyentran:Firehead123!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://user:pass!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
@@ -132,7 +132,13 @@ app.delete('/messages/:id', (req, res) => {
 })
 
 app.put('/messages/:id', (req, res) => {
-    Message.findByIdAndUpdate({_id: req.params.id}, {$inc: {votes: req.body.votes}}).then(function(message){
+    Message.findByIdAndUpdate({_id: req.params.id}, {$inc: {votes: req.body.votes}}, (err, message) => {
+        if (req.body.votes === '1'){
+            io.emit('upVote', req.params.id)
+        }
+        if (req.body.votes === '-1'){
+            io.emit('downVote', req.params.id)
+        }
         res.send(message)
     })
 })
