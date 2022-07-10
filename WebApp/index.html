@@ -100,17 +100,11 @@
     }
 
     function updateVote(id, vote){
-        $.get('http://localhost:3000/messages/'+id, (data) => {
-            let votes = data
-        })
-
-        votes += vote
-
         $.ajax({
             url: 'http://localhost:3000/messages/' + id,
             type: 'PUT',
             data: {
-                votes: votes
+                votes: vote
             },
             success: function(result){
                 alert('message updated')
