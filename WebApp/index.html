@@ -51,9 +51,13 @@
 
     socket.on('delete', removeMessage)
 
+    socket.on('upVote', upVote)
+
+    socket.on('downVote', downVote)
+
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
-        $("#messages").append(`<div id="${message._id}"> <br> <div> <h2> ${message.name} </h2> <p style="font-size:20px"> ${message.message} </p> <p> ${message.votes} </p> </div> <div> <button onclick="deleteMessage('${message._id}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> <button onclick = "updateVote('${message._id}', 1)" type="button" class="btn btn-outline-secondary">Up</button> <button onclick = "updateVote('${message._id}', -1)" type="button" class="btn btn-outline-secondary">Down</button> </div> </br> </div>`)
+        $("#messages").append(`<div id="${message._id}"> <br> <div> <h2> ${message.name} </h2> <p style="font-size:20px"> ${message.message} </p> <p name="numOfVotes" id="numOfVotes"> ${message.votes} </p> </div> <div> <button onclick="deleteMessage('${message._id}')" name="delete" id="delete" type="button" class="btn btn-danger" style="height:30%;width:20%;">Delete</button> <button onclick = "updateVote('${message._id}', 1)" type="button" class="btn btn-outline-secondary">Up</button> <button onclick = "updateVote('${message._id}', -1)" type="button" class="btn btn-outline-secondary">Down</button> </div> </br> </div>`)
     }
 
     function getMessages() {
@@ -107,16 +111,22 @@
                 votes: vote
             },
             success: function(result){
-                alert('message updated')
             },
             error: function(error){
-                alert('message could not be updated')
             }
         })
 
     }
 
-    function downVote(vote){
+    function upVote(id){
+        var getThis = "#" + id
+        var num = parseInt($(getThis).find(`#numOfVotes`).text()) + 1
+        $(getThis).find('#numOfVotes').text(num)
+    }
 
+    function downVote(id){
+        var getThis = "#" + id
+        var num = parseInt($(getThis).find(`#numOfVotes`).text()) - 1
+        $(getThis).find('#numOfVotes').text(num)
     }
 </script>
