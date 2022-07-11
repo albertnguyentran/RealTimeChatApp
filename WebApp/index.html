@@ -39,6 +39,9 @@
         //Jquery methods can be used on specific html tags by locating it with its id
         $("#send").click(() => {
             var message = {name: $("#name").val(), message: $("#message").val(), votes: 0}
+            $('#send').css({'background-color': 'green'})
+            $('#send').css({'border-color': 'green'})
+
             postMessage(message)
         })
 
@@ -54,6 +57,8 @@
     socket.on('upVote', upVote)
 
     socket.on('downVote', downVote)
+
+    socket.on('alert', change)
 
     //This function inserts the messages into the front-end using jquery
     function addMessages(message){
@@ -115,7 +120,6 @@
             error: function(error){
             }
         })
-
     }
 
     function upVote(id){
@@ -129,4 +133,11 @@
         var num = parseInt($(getThis).find(`#numOfVotes`).text()) - 1
         $(getThis).find('#numOfVotes').text(num)
     }
+
+    function change(){
+        $('#send').css({'background-color': 'red'})
+        $('#send').css({'border-color': 'red'})
+
+    }
+    
 </script>

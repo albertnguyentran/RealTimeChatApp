@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.Promise = Promise
 
 //This is the mongodb database access link
-var dbUrl = 'mongodb+srv://user:pass!@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://user:pass@cluster0.twhcx.mongodb.net/?retryWrites=true&w=majority'
 
 //Captail M for Message indicates that this is a model
 //Here we can design what we want our scheme to look like and what kind of data each variable should hold
@@ -82,7 +82,6 @@ async myFunction() {
 //Here we are routing all post requests to the specified path with the specified callback functions 
 //Whenever a post request is made, the data is emitted to the socket message
 app.post('/messages', async (req, res) => {
-
     try {
         //This var is connected to mongoose which is connected to mongodb
         var message = new Message(req.body)
@@ -95,16 +94,21 @@ app.post('/messages', async (req, res) => {
         
         var censored =  await Message.findOne({message: 'badword'})
 
-        if (censored)
-            //If a censored word is found, the Message.remove(message) is returned
-            //And because there is not a then chained onto after this, the function ends here because it is returned
-            await Message.remove({_id: censored.id})
+        console.log(req.body.name)
+        console.log(req.body)
         
-        else
+
+        if (filter.isProfane(req.body.name) || filter.isProfane(req.body.message)) {
+            
+            await Message.remove({name: req.body.name, message: req.body.message})
+            io.emit('alert')
+        }
+
+        else {
             //If there is no error, you will receive status 200 and not 500
             //Whenever a post request is to made to the /messages endpoint, io will emit the req.body to the socket 'message'
             io.emit('message', message)
-
+        }
         res.sendStatus(200)
 
     } catch (error) {
