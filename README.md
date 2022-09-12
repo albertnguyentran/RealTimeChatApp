@@ -16,7 +16,7 @@ Submit and your message will appear in the div below <br/>
 # How I made it
 **Stack:** <br/>
 Database: MongoDB, Mongoose to define object schemas <br/>
-Middleware: Node.JS, Express.JS
+Middleware: Node.JS, Express.JS <br/>
 Front-End: Vanilla HTML/CSS, JQuery
 
 # What's Next
